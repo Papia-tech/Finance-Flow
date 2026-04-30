@@ -41,24 +41,24 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background-color: #e0e0e0;
+            background-color: #ffffff;
         }
 
         body {
             color: var(--text-main);
-            display: flex;
+            display: block;
             justify-content: center;
             align-items: center;
         }
 
         #app {
             width: 100%;
-            max-width: 414px;
+            max-width: 100%;
             /* Uses Dynamic Viewport Height to fill mobile screens perfectly */
             height: 100dvh; 
             background: var(--bg);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
+            position: fixed;
             display: flex;
             flex-direction: column;
             overflow: hidden;
