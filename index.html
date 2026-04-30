@@ -3,24 +3,29 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated viewport for full-screen cover -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>FinanceFlow | Onboarding</title>
-    <!-- Inside <head> -->
+    
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <!-- Status bar color for Android -->
+    <meta name="theme-color" content="#ffffff">
+    <!-- Full-screen mode for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
     </script>
+    
     <style>
         :root {
             --bg: #ffffff;
             --primary: #1a1a1a;
             --text-main: #1a1a1a;
             --text-muted: #7f8c8d;
-            /* Added accent color variable used for the blob */
             --accent-blob: rgba(46, 204, 113, 0.4);
         }
 
@@ -31,28 +36,35 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        body {
+        /* Essential for PWA full-height */
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
             background-color: #e0e0e0;
+        }
+
+        body {
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
         }
 
         #app {
             width: 100%;
             max-width: 414px;
-            height: 100vh;
+            /* Uses Dynamic Viewport Height to fill mobile screens perfectly */
+            height: 100dvh; 
             background: var(--bg);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
-            /* For blob positioning */
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* Keeps blob contained */
+            /* Padding adjustment for notched phones */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         /* --- Random Blob Pseudo-element --- */
@@ -64,10 +76,7 @@
             width: 380px;
             height: 310px;
             background-color: var(--accent-blob);
-            /* Organic random shape */
             border-radius: 40% 60% 70% 30% / 50% 60% 30% 70%;
-            /* border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; */
-            /* Below header text, above everything else */
             z-index: 5;
             mix-blend-mode: multiply;
             transform: rotate(-20deg);
@@ -81,9 +90,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 10;
-            /* Elevated to ensure readability, but interacts via blend-mode */
             position: relative;
-            /* REQUIRED for z-index */
         }
 
         .logo-area {
@@ -99,6 +106,7 @@
             font-size: 14px;
             cursor: pointer;
             font-weight: 400;
+            padding: 10px; /* Larger tap target */
         }
 
         /* --- Content Area --- */
@@ -108,7 +116,6 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
-            /* Below the blob interactions */
             position: relative;
         }
 
@@ -130,7 +137,6 @@
             color: var(--text-main);
         }
 
-        /* Centering Wrapper */
         .illustration-wrapper {
             flex-grow: 1;
             display: flex;
@@ -141,8 +147,8 @@
 
         .illustration-container {
             width: 100%;
-            /* Scalable, responsive height */
-            height: clamp(400px, 48vh, 550px);
+            /* Increased height range to fill space better */
+            height: clamp(350px, 60vh, 600px);
             background: url('loaded.png') no-repeat center;
             background-size: contain;
             position: relative;
@@ -195,20 +201,13 @@
             transform: scale(1.05);
         }
 
-        #app {
-            animation: appLoadIn 0.8s ease-out;
+        @keyframes appLoadIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        @keyframes appLoadIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        #app {
+            animation: appLoadIn 0.8s ease-out;
         }
     </style>
 </head>
@@ -227,7 +226,6 @@
                 <h1>Manage money.<br>Effortlessly.</h1>
             </div>
 
-            <!-- This wrapper ensures the image is always centered in the available space -->
             <div class="illustration-wrapper">
                 <div class="illustration-container"></div>
             </div>
@@ -243,30 +241,21 @@
         let deferredPrompt;
         const skipBtn = document.querySelector('.skip-btn');
 
-        // 1. Listen for the browser's install suggestion
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
-            // Stash the event so it can be triggered later.
             deferredPrompt = e;
         });
 
-        // 2. Trigger the prompt when Skip is clicked
         skipBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
-                // Show the install prompt
                 deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
                 const { outcome } = await deferredPrompt.userChoice;
                 console.log(`User response to install: ${outcome}`);
-                // We've used the prompt, and can't use it again
                 deferredPrompt = null;
             } else {
                 alert("App is already installed or your browser doesn't support PWA installs.");
             }
         });
     </script>
-
 </body>
-
 </html>

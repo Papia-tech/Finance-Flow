@@ -3,8 +3,10 @@
   "short_name": "FinanceFlow",
   "start_url": "index.html",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "orientation": "portrait",
   "background_color": "#ffffff",
-  "theme_color": "#1a1a1a",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "icon-192.png",
