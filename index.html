@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceFlow | Onboarding</title>
+    <!-- Inside <head> -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --primary: #1a1a1a;
+            --text-main: #1a1a1a;
+            --text-muted: #7f8c8d;
+            /* Added accent color variable used for the blob */
+            --accent-blob: rgba(46, 204, 113, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #e0e0e0;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            background: var(--bg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            /* For blob positioning */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Keeps blob contained */
+        }
+
+        /* --- Random Blob Pseudo-element --- */
+        #app::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 380px;
+            height: 310px;
+            background-color: var(--accent-blob);
+            /* Organic random shape */
+            border-radius: 40% 60% 70% 30% / 50% 60% 30% 70%;
+            /* border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; */
+            /* Below header text, above everything else */
+            z-index: 5;
+            mix-blend-mode: multiply;
+            transform: rotate(-20deg);
+        }
+
+        /* --- Header --- */
+        header {
+            width: 100%;
+            padding: 25px 25px 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            /* Elevated to ensure readability, but interacts via blend-mode */
+            position: relative;
+            /* REQUIRED for z-index */
+        }
+
+        .logo-area {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .skip-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        /* --- Content Area --- */
+        .content-main {
+            flex-grow: 1;
+            padding: 0 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            /* Below the blob interactions */
+            position: relative;
+        }
+
+        .headline-container {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .headline-container p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .headline-container h1 {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-main);
+        }
+
+        /* Centering Wrapper */
+        .illustration-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .illustration-container {
+            width: 100%;
+            /* Scalable, responsive height */
+            height: clamp(400px, 48vh, 550px);
+            background: url('loaded.png') no-repeat center;
+            background-size: contain;
+            position: relative;
+        }
+
+        /* --- Footer --- */
+        .onboarding-footer {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            padding: 0 25px 25px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 1;
+        }
+
+        .doodle-chat {
+            position: absolute;
+            bottom: 20px;
+            left: 25px;
+            width: 60px;
+            height: 50px;
+            background-image: url('data:image/svg+xml;utf8,<svg width="48" height="40" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6364 1V31.7273M1 12.6364H31.7273M22 22H39M33 33H47M13 39V47M24 13L24 1M35 13L35 1" stroke="black" stroke-width="2" stroke-linecap="round"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.8;
+        }
+
+        .action-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            z-index: 10;
+        }
+
+        .action-button:hover {
+            background-color: #333333;
+            transform: scale(1.05);
+        }
+
+        #app {
+            animation: appLoadIn 0.8s ease-out;
+        }
+
+        @keyframes appLoadIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <header>
+            <div class="logo-area">/financeflow:</div>
+            <button class="skip-btn">Skip</button>
+        </header>
+
+        <div class="content-main">
+            <div class="headline-container">
+                <p>Hello there,</p>
+                <h1>Manage money.<br>Effortlessly.</h1>
+            </div>
+
+            <!-- This wrapper ensures the image is always centered in the available space -->
+            <div class="illustration-wrapper">
+                <div class="illustration-container"></div>
+            </div>
+        </div>
+
+        <div class="onboarding-footer">
+            <div class="doodle-chat"></div>
+            <button class="action-button">Let's Go</button>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        const skipBtn = document.querySelector('.skip-btn');
+
+        // 1. Listen for the browser's install suggestion
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+        });
+
+        // 2. Trigger the prompt when Skip is clicked
+        skipBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install: ${outcome}`);
+                // We've used the prompt, and can't use it again
+                deferredPrompt = null;
+            } else {
+                alert("App is already installed or your browser doesn't support PWA installs.");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
