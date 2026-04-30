@@ -6,7 +6,7 @@
     <!-- Updated viewport for full-screen cover -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>FinanceFlow | Onboarding</title>
-    
+
     <link rel="manifest" href="manifest.json">
     <!-- Status bar color for Android -->
     <meta name="theme-color" content="#ffffff">
@@ -19,7 +19,7 @@
             navigator.serviceWorker.register('sw.js');
         }
     </script>
-    
+
     <style>
         :root {
             --bg: #ffffff;
@@ -34,10 +34,20 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* Disable the sky blue tap highlight */
+            -webkit-tap-highlight-color: transparent;
+
+            /* Disable the long-press "save image" or "copy text" menu on UI elements */
+            -webkit-touch-callout: none;
+
+            /* Stop the user from accidentally selecting text while tapping buttons */
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* Essential for PWA full-height */
-        html, body {
+        html,
+        body {
             height: 100%;
             width: 100%;
             background-color: #ffffff;
@@ -54,7 +64,7 @@
             width: 100%;
             max-width: 100%;
             /* Uses Dynamic Viewport Height to fill mobile screens perfectly */
-            height: 100dvh; 
+            height: 100dvh;
             background: var(--bg);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: fixed;
@@ -104,7 +114,8 @@
             font-size: 14px;
             cursor: pointer;
             font-weight: 400;
-            padding: 10px; /* Larger tap target */
+            padding: 10px;
+            /* Larger tap target */
         }
 
         /* --- Content Area --- */
@@ -200,8 +211,15 @@
         }
 
         @keyframes appLoadIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         #app {
@@ -256,4 +274,5 @@
         });
     </script>
 </body>
+
 </html>
