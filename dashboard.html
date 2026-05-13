@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FinanceFlow | Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --primary: #6ab085; /* Sage Green */
+            --dark-card: #1a1a1a;
+            --text-main: #2d3436;
+            --text-muted: #a0a0a0;
+            --soft-bg: #f8faf9;
+            --border-light: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdfdfd;
+            color: var(--text-main);
+            overflow: hidden; 
+        }
+
+        #app {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 20px 0 20px;
+            position: relative;
+        }
+
+        /* --- VIEW MANAGEMENT --- */
+        .view-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .view-content.active {
+            display: flex;
+        }
+
+        /* --- FIXED TOP PORTION --- */
+        .header-fixed-section {
+            flex-shrink: 0;
+            z-index: 10;
+            background: #fdfdfd;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5px;
+            margin-bottom: 10px;
+        }
+
+        .menu-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .menu-dots span {
+            width: 18px;
+            height: 2px;
+            background: #333;
+        }
+
+        .user-greeting h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .user-greeting p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .notif-icon {
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .balance-card {
+            width: 100%;
+            background: var(--primary);
+            border-radius: 24px;
+            padding: 25px;
+            color: white;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .balance-label {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+        }
+
+        .stat-item p {
+            font-size: 11px;
+            opacity: 0.6;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-item span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card-image-corner {
+            position: absolute;
+            bottom: -30px;
+            right: -20px;
+            width: 160px;
+            height: auto;
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        /* --- HISTORY SPECIFIC STYLES --- */
+        .history-header {
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            background: var(--soft-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .date-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin: 20px 0 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- SCROLLABLE LISTING PORTION --- */
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 120px;
+            scrollbar-width: none;
+            scroll-behavior: smooth; 
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0 15px;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-header a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .expense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .expense-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5px;
+        }
+
+        .expense-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--soft-bg);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .expense-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .expense-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .expense-amount {
+            font-weight: 700;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .spending-summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-mini {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 40px;
+        }
+
+        .bar {
+            width: 6px;
+            background: var(--primary);
+            border-radius: 10px;
+            opacity: 0.3;
+        }
+
+        .bar.active { opacity: 1; height: 100%; }
+
+        /* --- SCROLL TO TOP BUTTON --- */
+        #scrollToTopBtn {
+            position: absolute;
+            bottom: 100px; 
+            right: 25px;
+            width: 40px;
+            height: 40px;
+            background: var(--dark-card);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        #scrollToTopBtn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-5px);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 15px 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-light);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .add-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(106, 176, 133, 0.3);
+            margin-top: -10px;
+            cursor: pointer;
+        }
+
+        /* Form Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-radius: 30px 30px 0 0;
+            padding: 30px;
+            z-index: 201;
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active { display: block; opacity: 1; }
+        .form-sheet.active { bottom: 0; }
+
+        .form-handle { width: 40px; height: 4px; background: var(--border-light); border-radius: 10px; margin: -10px auto 20px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        .form-group input, .form-group select { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--soft-bg); font-size: 15px; outline: none; }
+        .submit-btn { width: 100%; padding: 16px; background: var(--dark-card); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; }
+
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        
+        <div id="homeView" class="view-content active">
+            <div class="header-fixed-section">
+                <header>
+                    <div class="menu-dots">
+                        <span></span>
+                        <span></span>
+                        <span style="width: 12px;"></span>
+                    </div>
+                    <div class="notif-icon">
+                        <i data-lucide="bell" size="20"></i>
+                    </div>
+                </header>
+
+                <div class="user-greeting">
+                    <h1>Hello, Alex</h1>
+                    <p>Manage your money</p>
+                </div>
+
+                <div class="balance-card">
+                    <img src="Back.png" alt="Overview" class="card-image-corner">
+                    <div class="balance-label">Total Balance</div>
+                    <div class="balance-amount">$25,453.00</div>
+                    <div class="card-stats">
+                        <div class="stat-item"><p>Income</p><span>$3,200.00</span></div>
+                        <div class="stat-item"><p>Expenses</p><span>$750.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scrollable-content" id="scrollContainer">
+                <div class="section-header">
+                    <h2>Expenses</h2>
+                    <a href="#">View all</a>
+                </div>
+
+                <div class="expense-list">
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="utensils" size="20"></i></div>
+                            <div class="expense-info"><h3>Food & Drinks</h3><p>May 16, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$120.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="car" size="20"></i></div>
+                            <div class="expense-info"><h3>Transport</h3><p>May 15, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$80.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="shopping-bag" size="20"></i></div>
+                            <div class="expense-info"><h3>Shopping</h3><p>May 14, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$200.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="utensils" size="20"></i></div>
+                            <div class="expense-info"><h3>Food & Drinks</h3><p>May 16, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$120.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="car" size="20"></i></div>
+                            <div class="expense-info"><h3>Transport</h3><p>May 15, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$80.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="utensils" size="20"></i></div>
+                            <div class="expense-info"><h3>Food & Drinks</h3><p>May 16, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$120.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="car" size="20"></i></div>
+                            <div class="expense-info"><h3>Transport</h3><p>May 15, 2024</p></div>
+                        </div>
+                        <div class="expense-amount">-$80.00</div>
+                    </div>
+                    
+                    <div class="spending-summary">
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-muted);">Spending this month</p>
+                            <p style="font-size: 18px; font-weight: 700;">$750.00</p>
+                        </div>
+                        <div class="chart-mini">
+                            <div class="bar" style="height: 40%;"></div>
+                            <div class="bar" style="height: 70%;"></div>
+                            <div class="bar active" style="height: 100%;"></div>
+                            <div class="bar" style="height: 60%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="historyView" class="view-content">
+            <div class="header-fixed-section">
+                <header>
+                    <div class="menu-dots">
+                        <span></span>
+                        <span></span>
+                        <span style="width: 12px;"></span>
+                    </div>
+                    <h2 style="font-size: 18px; font-weight: 700;">Transaction History</h2>
+                    <div class="notif-icon">
+                        <i data-lucide="filter" size="20"></i>
+                    </div>
+                </header>
+
+                <div class="search-bar">
+                    <i data-lucide="search" size="18" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="Search transactions...">
+                </div>
+            </div>
+
+            <div class="scrollable-content" id="historyScrollContainer">
+                <div class="date-label">Today</div>
+                <div class="expense-list">
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="coffee" size="20"></i></div>
+                            <div class="expense-info"><h3>Starbucks Coffee</h3><p>09:15 AM</p></div>
+                        </div>
+                        <div class="expense-amount">-$5.50</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="utensils" size="20"></i></div>
+                            <div class="expense-info"><h3>Lunch at Bistro</h3><p>01:30 PM</p></div>
+                        </div>
+                        <div class="expense-amount">-$22.00</div>
+                    </div>
+                </div>
+
+                <div class="date-label">Yesterday</div>
+                <div class="expense-list">
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="shopping-bag" size="20"></i></div>
+                            <div class="expense-info"><h3>Amazon Store</h3><p>06:45 PM</p></div>
+                        </div>
+                        <div class="expense-amount">-$154.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="zap" size="20"></i></div>
+                            <div class="expense-info"><h3>Electricity Bill</h3><p>11:00 AM</p></div>
+                        </div>
+                        <div class="expense-amount">-$85.00</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-left">
+                            <div class="icon-box"><i data-lucide="smartphone" size="20"></i></div>
+                            <div class="expense-info"><h3>Mobile Recharge</h3><p>10:15 AM</p></div>
+                        </div>
+                        <div class="expense-amount">-$15.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="scrollToTopBtn">
+            <i data-lucide="arrow-up" size="20"></i>
+        </button>
+
+        <nav>
+            <div class="nav-item active" id="navHome">
+                <div class="nav-icon"><i data-lucide="home" size="22"></i></div>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" id="navHistory">
+                <div class="nav-icon"><i data-lucide="history" size="22"></i></div>
+                <span>History</span>
+            </div>
+            <button class="add-btn" id="openFormBtn"><i data-lucide="plus" size="28"></i></button>
+            <div class="nav-item"><div class="nav-icon"><i data-lucide="pie-chart" size="22"></i></div><span>Budget</span></div>
+            <div class="nav-item"><div class="nav-icon"><i data-lucide="user" size="22"></i></div><span>Profile</span></div>
+        </nav>
+    </div>
+
+    <div class="modal-overlay" id="overlay"></div>
+    <div class="form-sheet" id="formSheet">
+        <div class="form-handle"></div>
+        <h2 style="text-align: center; margin-bottom: 20px;">Add New Transaction</h2>
+        <div class="form-group"><label>Title</label><input type="text" placeholder="e.g. Netflix"></div>
+        <div class="form-group"><label>Category</label><select><option>Food & Drinks</option><option>Transport</option></select></div>
+        <div class="form-group"><label>Amount</label><input type="number" placeholder="0.00"></div>
+        <button class="submit-btn" id="submitBtn">Add Listing</button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        const scrollContainer = document.getElementById('scrollContainer');
+        const historyScroll = document.getElementById('historyScrollContainer');
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        const openBtn = document.getElementById('openFormBtn');
+        const overlay = document.getElementById('overlay');
+        const formSheet = document.getElementById('formSheet');
+
+        // Navigation Elements
+        const navHome = document.getElementById('navHome');
+        const navHistory = document.getElementById('navHistory');
+        const homeView = document.getElementById('homeView');
+        const historyView = document.getElementById('historyView');
+
+        // View Switching Logic
+        navHome.addEventListener('click', () => {
+            homeView.classList.add('active');
+            historyView.classList.remove('active');
+            navHome.classList.add('active');
+            navHistory.classList.remove('active');
+            scrollToTopBtn.classList.remove('visible');
+        });
+
+        navHistory.addEventListener('click', () => {
+            historyView.classList.add('active');
+            homeView.classList.remove('active');
+            navHistory.classList.add('active');
+            navHome.classList.remove('active');
+            scrollToTopBtn.classList.remove('visible');
+        });
+
+        // Scroll Logic for both containers
+        const handleScroll = (container) => {
+            if (container.scrollTop > 100) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        };
+
+        scrollContainer.addEventListener('scroll', () => handleScroll(scrollContainer));
+        historyScroll.addEventListener('scroll', () => handleScroll(historyScroll));
+
+        scrollToTopBtn.addEventListener('click', () => {
+            const activeContainer = homeView.classList.contains('active') ? scrollContainer : historyScroll;
+            activeContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Form Logic
+        const toggleForm = (show) => {
+            if(show) {
+                overlay.style.display = 'block';
+                setTimeout(() => { overlay.classList.add('active'); formSheet.classList.add('active'); }, 10);
+            } else {
+                overlay.classList.remove('active'); formSheet.classList.remove('active');
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
+            }
+        };
+
+        openBtn.addEventListener('click', () => toggleForm(true));
+        overlay.addEventListener('click', () => toggleForm(false));
+    </script>
+</body>
+</html>

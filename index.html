@@ -3,14 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- Updated viewport for full-screen cover -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>FinanceFlow | Onboarding</title>
 
     <link rel="manifest" href="manifest.json">
-    <!-- Status bar color for Android -->
     <meta name="theme-color" content="#ffffff">
-    <!-- Full-screen mode for iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -73,6 +70,14 @@
             /* Padding adjustment for notched phones */
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+        }
+
+        /* Transition state for when leaving the page */
+        .page-exit {
+            transform: scale(1.1);
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* --- Random Blob Pseudo-element --- */
@@ -255,7 +260,9 @@
 
     <script>
         let deferredPrompt;
+        const app = document.getElementById('app');
         const skipBtn = document.querySelector('.skip-btn');
+        const letsGoBtn = document.querySelector('.action-button');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -271,6 +278,14 @@
             } else {
                 alert("App is already installed or your browser doesn't support PWA installs.");
             }
+        });
+
+        // Redirect to dashboard with a smooth exit animation
+        letsGoBtn.addEventListener('click', () => {
+            app.classList.add('page-exit');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500); // Matches the 0.5s transition in CSS
         });
     </script>
 </body>
