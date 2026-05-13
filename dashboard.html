@@ -1090,8 +1090,10 @@
             btn.innerHTML = 'Deleting...';
             
             try {
+                const API_BASE = "https://finance-flow-fc9r.onrender.com";
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://localhost:3000/api/transactions/${selectedTxId}`, {
+                
+                const res = await fetch(`${API_BASE}/api/transactions/${selectedTxId}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -1142,8 +1144,10 @@
             errorMsg.textContent = '';
             
             try {
+                const API_BASE = "https://finance-flow-fc9r.onrender.com";
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/api/transactions/reset', {
+                
+                const res = await fetch(`${API_BASE}/api/transactions/reset`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
