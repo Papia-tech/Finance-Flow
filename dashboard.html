@@ -62,23 +62,13 @@
             background: #fdfdfd;
         }
 
+        /* Modified header to align greeting and icon */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5px;
-            margin-bottom: 10px;
-        }
-
-        .menu-dots {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .menu-dots span {
-            width: 18px;
-            height: 2px;
-            background: #333;
+            padding: 10px 5px; /* Reduced padding to push up */
+            margin-bottom: 5px;
         }
 
         .user-greeting h1 {
@@ -96,6 +86,10 @@
             color: #333;
             display: flex;
             align-items: center;
+            background: var(--soft-bg);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
         }
 
         .balance-card {
@@ -104,7 +98,7 @@
             border-radius: 24px;
             padding: 25px;
             color: white;
-            margin: 20px 0;
+            margin: 15px 0; /* Reduced margin */
             position: relative;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             overflow: hidden;
@@ -152,10 +146,6 @@
         }
 
         /* --- HISTORY SPECIFIC STYLES --- */
-        .history-header {
-            margin-bottom: 20px;
-        }
-
         .search-bar {
             background: var(--soft-bg);
             border: 1px solid var(--border-light);
@@ -164,7 +154,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         .search-bar input {
@@ -417,20 +407,14 @@
         <div id="homeView" class="view-content active">
             <div class="header-fixed-section">
                 <header>
-                    <div class="menu-dots">
-                        <span></span>
-                        <span></span>
-                        <span style="width: 12px;"></span>
+                    <div class="user-greeting">
+                        <h1>Hello, Alex</h1>
+                        <p>Manage your money</p>
                     </div>
                     <div class="notif-icon">
                         <i data-lucide="bell" size="20"></i>
                     </div>
                 </header>
-
-                <div class="user-greeting">
-                    <h1>Hello, Alex</h1>
-                    <p>Manage your money</p>
-                </div>
 
                 <div class="balance-card">
                     <img src="Back.png" alt="Overview" class="card-image-corner">
@@ -519,11 +503,6 @@
         <div id="historyView" class="view-content">
             <div class="header-fixed-section">
                 <header>
-                    <div class="menu-dots">
-                        <span></span>
-                        <span></span>
-                        <span style="width: 12px;"></span>
-                    </div>
                     <h2 style="font-size: 18px; font-weight: 700;">Transaction History</h2>
                     <div class="notif-icon">
                         <i data-lucide="filter" size="20"></i>
