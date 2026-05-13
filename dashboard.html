@@ -981,8 +981,8 @@
             document.getElementById('submitBtn').textContent = 'Adding...';
 
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:3000/api/transactions', {
+                const API_BASE = "https://finance-flow-fc9r.onrender.com";
+                const res = await fetch(`${API_BASE}/api/transactions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
