@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>FinanceFlow | Dashboard</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -480,7 +491,7 @@
             <div class="scrollable-content" id="scrollContainer">
                 <div class="section-header">
                     <h2>Expenses</h2>
-                    <a href="#">View all</a>
+                    <a href="#" id="viewAllBtn">View all</a>
                 </div>
 
                 <div class="expense-list" id="homeExpenseList">
@@ -501,7 +512,7 @@
 
                 <div class="search-bar">
                     <i data-lucide="search" size="18" style="color: var(--text-muted);"></i>
-                    <input type="text" placeholder="Search transactions...">
+                    <input type="text" id="searchInput" placeholder="Search transactions...">
                 </div>
             </div>
 
@@ -586,6 +597,16 @@
                                         size="20"></i></div>
                                 <div class="expense-info">
                                     <h3 style="font-size: 15px;">Help Center</h3>
+                                </div>
+                            </div>
+                            <div style="color: var(--text-muted);"><i data-lucide="chevron-right" size="20"></i></div>
+                        </div>
+                        <div class="expense-item" id="installAppBtn" style="padding: 15px; cursor: pointer; display: none;">
+                            <div class="expense-left">
+                                <div class="icon-box" style="background: white;"><i data-lucide="download"
+                                        size="20"></i></div>
+                                <div class="expense-info">
+                                    <h3 style="font-size: 15px;">Install App</h3>
                                 </div>
                             </div>
                             <div style="color: var(--text-muted);"><i data-lucide="chevron-right" size="20"></i></div>
@@ -937,8 +958,9 @@
                     const amountStr = (tx.type === 'expense' ? '-' : '+') + '$' + parseFloat(tx.amount).toFixed(2);
                     const amountColor = tx.type === 'income' ? 'var(--primary)' : '#333';
 
+                    const searchData = `${tx.title} ${tx.category} ${amountStr} ${dateStr}`.toLowerCase();
                     const itemHTML = `
-                        <div class="expense-item" onclick="openDetails(${index})" style="cursor: pointer;">
+                        <div class="expense-item" onclick="openDetails(${index})" style="cursor: pointer;" data-search="${searchData.replace(/"/g, '&quot;')}">
                             <div class="expense-left">
                                 <div class="icon-box"><i data-lucide="${iconName}" size="20"></i></div>
                                 <div class="expense-info"><h3>${tx.title}</h3><p>${dateStr}</p></div>
@@ -1173,6 +1195,49 @@
                 btn.innerHTML = originalText;
             }
         });
+
+        // View All Button Logic
+        document.getElementById('viewAllBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView(navHistory, historyView);
+        });
+
+        // Search Filter Logic
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('#historyListContainer .expense-item');
+            
+            items.forEach(item => {
+                const searchData = item.getAttribute('data-search') || '';
+                if (searchData.includes(term)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // PWA Install Logic
+        let deferredPrompt;
+        const installAppBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installAppBtn) installAppBtn.style.display = 'flex';
+        });
+
+        if (installAppBtn) {
+            installAppBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to install: ${outcome}`);
+                    deferredPrompt = null;
+                    installAppBtn.style.display = 'none';
+                }
+            });
+        }
 
         // Load initially
         loadTransactions();
