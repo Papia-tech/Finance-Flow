@@ -885,8 +885,12 @@
         const loadTransactions = async () => {
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch('http://localhost:3000/api/transactions', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                const API_BASE = "https://finance-flow-fc9r.onrender.com";
+
+                const res = await fetch(`${API_BASE}/api/transactions`, {
+                    headers: { 
+                        'Authorization': `Bearer ${token}` 
+                    }
                 });
                 if (!res.ok) throw new Error('Failed to fetch');
                 const transactions = await res.json();
