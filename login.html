@@ -274,7 +274,8 @@
             loader.style.display = 'block';
 
             const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
-            const url = `http://localhost:3000${endpoint}`;
+            const API_BASE = "https://finance-flow-fc9r.onrender.com";
+            const url = `${API_BASE}${endpoint}`;
 
             try {
                 const response = await fetch(url, {
