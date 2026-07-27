@@ -1,0 +1,212 @@
+:root {
+    --bg: #ffffff;
+    --primary: #1a1a1a;
+    --text-main: #1a1a1a;
+    --text-muted: #7f8c8d;
+    --accent-blob: rgba(46, 204, 113, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* Disable the sky blue tap highlight */
+    -webkit-tap-highlight-color: transparent;
+
+    /* Disable the long-press "save image" or "copy text" menu on UI elements */
+    -webkit-touch-callout: none;
+
+    /* Stop the user from accidentally selecting text while tapping buttons */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Essential for PWA full-height */
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+body {
+    color: var(--text-main);
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    width: 100%;
+    max-width: 100%;
+    /* Uses Dynamic Viewport Height to fill mobile screens perfectly */
+    height: 100dvh;
+    background: var(--bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    /* Padding adjustment for notched phones */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+
+/* Transition state for when leaving the page */
+.page-exit {
+    transform: scale(1.1);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- Random Blob Pseudo-element --- */
+#app::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    width: 380px;
+    height: 310px;
+    background-color: var(--accent-blob);
+    border-radius: 40% 60% 70% 30% / 50% 60% 30% 70%;
+    z-index: 5;
+    mix-blend-mode: multiply;
+    transform: rotate(-20deg);
+}
+
+/* --- Header --- */
+header {
+    width: 100%;
+    padding: 25px 25px 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    position: relative;
+}
+
+.logo-area {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.skip-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 400;
+    padding: 10px;
+    /* Larger tap target */
+}
+
+/* --- Content Area --- */
+.content-main {
+    flex-grow: 1;
+    padding: 0 25px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    position: relative;
+}
+
+.headline-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.headline-container p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.headline-container h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-main);
+}
+
+.illustration-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.illustration-container {
+    width: 100%;
+    /* Increased height range to fill space better */
+    height: clamp(350px, 60vh, 600px);
+    background: url('../assets/images/loaded.png') no-repeat center;
+    background-size: contain;
+    position: relative;
+}
+
+/* --- Footer --- */
+.onboarding-footer {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    padding: 0 25px 25px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 1;
+}
+
+.doodle-chat {
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+    width: 60px;
+    height: 50px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="48" height="40" viewBox="0 0 48 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6364 1V31.7273M1 12.6364H31.7273M22 22H39M33 33H47M13 39V47M24 13L24 1M35 13L35 1" stroke="black" stroke-width="2" stroke-linecap="round"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+}
+
+.action-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    z-index: 10;
+}
+
+.action-button:hover {
+    background-color: #333333;
+    transform: scale(1.05);
+}
+
+@keyframes appLoadIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#app {
+    animation: appLoadIn 0.8s ease-out;
+}

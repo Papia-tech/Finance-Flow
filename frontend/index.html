@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FinanceFlow | Onboarding</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+    <div id="app">
+        <header>
+            <div class="logo-area">/financeflow:</div>
+            <button class="skip-btn">Skip</button>
+        </header>
+
+        <div class="content-main">
+            <div class="headline-container">
+                <p>Hello there,</p>
+                <h1>Manage money.<br>Effortlessly.</h1>
+            </div>
+
+            <div class="illustration-wrapper">
+                <div class="illustration-container"></div>
+            </div>
+        </div>
+
+        <div class="onboarding-footer">
+            <div class="doodle-chat"></div>
+            <button class="action-button">Let's Go</button>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        const app = document.getElementById('app');
+        const skipBtn = document.querySelector('.skip-btn');
+        const letsGoBtn = document.querySelector('.action-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        skipBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install: ${outcome}`);
+                deferredPrompt = null;
+            } else {
+                alert("App is already installed or your browser doesn't support PWA installs.");
+            }
+        });
+
+        // Redirect to login with a smooth exit animation
+        letsGoBtn.addEventListener('click', () => {
+            app.classList.add('page-exit');
+            setTimeout(() => {
+                window.location.href = 'pages/login.html';
+            }, 500); // Matches the 0.5s transition in CSS
+        });
+    </script>
+</body>
+
+</html>
