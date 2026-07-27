@@ -30,6 +30,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
             category TEXT,
             amount REAL,
             type TEXT,
+            description TEXT,
             date DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (id)
         )`, (err) => {

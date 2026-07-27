@@ -10,7 +10,7 @@ router.use(requireAuth);
 
 // Add a new transaction
 router.post('/', (req, res) => {
-    const { title, category, amount, type } = req.body;
+    const { title, category, amount, type, description } = req.body;
     const userId = req.user.userId;
 
     if (!title || !category || amount === undefined || !type) {
@@ -18,8 +18,8 @@ router.post('/', (req, res) => {
     }
 
     db.run(
-        `INSERT INTO transactions (user_id, title, category, amount, type) VALUES (?, ?, ?, ?, ?)`,
-        [userId, title, category, amount, type],
+        `INSERT INTO transactions (user_id, title, category, amount, type, description) VALUES (?, ?, ?, ?, ?, ?)`,
+        [userId, title, category, amount, type, description || ''],
         function(err) {
             if (err) {
                 console.error('Database error inserting transaction:', err.message);
@@ -63,6 +63,7 @@ router.delete('/:id', (req, res) => {
             if (this.changes === 0) {
                 return res.status(404).json({ error: 'Transaction not found or unauthorized' });
             }
+            return res.json({ message: 'Transaction deleted successfully' });
         }
     );
 });
