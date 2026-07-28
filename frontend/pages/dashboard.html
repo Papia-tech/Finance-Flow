@@ -4,17 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link rel="icon" type="image/png" href="../assets/icons/icon-192.png">
     <title>FinanceFlow | Dashboard</title>
     
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
+
     <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('ServiceWorker registration failed:', error);
+                    });
+            });
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
