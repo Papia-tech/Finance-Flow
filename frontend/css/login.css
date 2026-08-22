@@ -3,23 +3,26 @@
     --primary: #6ab085;
     /* Sage Green */
     --dark-card: #1a1a1a;
-    --text-main: #2d3436;
-    --text-muted: #a0a0a0;
+    --text-main: #1a1a1a;
+    --text-muted: #7f8c8d;
     --soft-bg: #f8faf9;
     --border-light: #f0f0f0;
-    --accent-blob: rgba(106, 176, 133, 0.2);
+    --accent-blob: rgba(46, 204, 113, 0.4);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 body {
-    background: #fdfdfd;
+    background: #f3f7f5; /* Light soft green-tinted background for desktop layout */
     color: var(--text-main);
     display: flex;
     justify-content: center;
@@ -33,53 +36,123 @@ body {
     max-width: 480px;
     height: 100dvh;
     background: var(--bg);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(106, 176, 133, 0.1);
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 40px 30px;
     overflow: hidden;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
 }
 
-/* --- Random Blob Pseudo-element --- */
-#app::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 350px;
-    height: 350px;
-    background-color: var(--accent-blob);
-    border-radius: 40% 60% 70% 30% / 50% 60% 30% 70%;
-    z-index: 0;
-    mix-blend-mode: multiply;
-    transform: rotate(20deg);
+/* --- Hero Section (mockup-aligned green top banner) --- */
+.hero-section {
+    background: var(--accent-blob);
+    padding: 30px 30px 45px 30px;
+    color: var(--text-main);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 35%; /* Hero occupies ~35% of page */
+    justify-content: space-between;
 }
 
-.auth-header {
-    z-index: 10;
-    margin-top: 40px;
-    margin-bottom: 40px;
+.hero-section header {
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-.auth-header h1 {
+.hero-section .logo-area {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.hero-content {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.hero-content h1 {
     font-size: 32px;
     font-weight: 800;
-    color: var(--dark-card);
-    margin-bottom: 8px;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
 }
 
-.auth-header p {
+.hero-content p {
     font-size: 14px;
+    opacity: 0.9;
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+/* Mascot overlapping the curved boundary */
+.mascot-badge {
+    position: absolute;
+    top: -105px; /* Positioned relative to .form-card container to overlap green banner */
+    right: 35px;
+    width: 105px;
+    height: 105px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mascot-badge img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.12));
+    animation: mascotBob 3s ease-in-out infinite;
+}
+
+@keyframes mascotBob {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(1.5deg);
+    }
+}
+
+/* --- Form Card overlay (curved top) --- */
+.form-card {
+    background: #ffffff;
+    border-radius: 28px 28px 0 0;
+    padding: 35px 30px;
+    position: relative;
+    z-index: 5;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: -20px; /* Overlaps hero section banner */
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.form-card-header {
+    margin-bottom: 25px;
+}
+
+.form-card-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--dark-card);
+    margin-bottom: 4px;
+}
+
+.form-card-header p {
+    font-size: 13px;
     color: var(--text-muted);
 }
 
 .form-container {
-    z-index: 10;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
 }
 
 .input-group {
@@ -88,7 +161,7 @@ body {
 
 .input-group i {
     position: absolute;
-    left: 15px;
+    left: 18px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
@@ -96,32 +169,41 @@ body {
 
 .input-group input {
     width: 100%;
-    padding: 16px 15px 16px 45px;
-    border-radius: 16px;
-    border: 1px solid var(--border-light);
-    background: var(--soft-bg);
+    padding: 16px 15px 16px 50px;
+    border-radius: 20px; /* Pill inputs */
+    border: 1.5px solid #edf2f0;
+    background: #f8faf9;
     font-size: 15px;
     outline: none;
     color: var(--text-main);
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.input-group input:hover {
+    border-color: #d2ded9;
 }
 
 .input-group input:focus {
     border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(106, 176, 133, 0.12);
 }
 
+/* Green pill submission button matching design references */
 .action-button {
     width: 100%;
-    padding: 18px;
-    background: var(--dark-card);
+    padding: 16px;
+    background: var(--primary);
     color: #ffffff;
     border: none;
-    border-radius: 16px;
+    border-radius: 20px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 18px rgba(106, 176, 133, 0.25);
     margin-top: 10px;
     display: flex;
     align-items: center;
@@ -129,22 +211,34 @@ body {
     gap: 10px;
 }
 
+.action-button:hover {
+    background: #599c72;
+    box-shadow: 0 10px 22px rgba(106, 176, 133, 0.35);
+    transform: translateY(-2px);
+}
+
 .action-button:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.98);
 }
 
 .toggle-text {
     text-align: center;
-    margin-top: 25px;
+    margin-top: auto; /* Push links to bottom */
+    padding-top: 25px;
     font-size: 14px;
     color: var(--text-muted);
-    z-index: 10;
 }
 
 .toggle-text span {
     color: var(--primary);
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-text span:hover {
+    color: #4e8c68;
+    text-decoration: underline;
 }
 
 .error-message {
@@ -172,7 +266,6 @@ body {
     0% {
         transform: rotate(0deg);
     }
-
     100% {
         transform: rotate(360deg);
     }
