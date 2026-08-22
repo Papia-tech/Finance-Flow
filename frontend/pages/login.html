@@ -17,36 +17,57 @@
 <body>
 
     <div id="app">
-        <div class="auth-header">
-            <h1 id="title">Welcome Back</h1>
-            <p id="subtitle">Log in to manage your finances</p>
+        <!-- Top Hero Section (Gradient Green Banner) -->
+        <div class="hero-section">
+            <header>
+                <div class="logo-area">/financeflow:</div>
+            </header>
+            <div class="hero-content">
+                <h1 id="heroTitle">Hello!</h1>
+                <p id="heroSubtitle">Welcome to FinanceFlow</p>
+            </div>
         </div>
 
-        <div class="form-container">
-            <div class="input-group">
-                <i data-lucide="user" size="20"></i>
-                <input type="text" id="username" placeholder="Username" autocomplete="off">
+        <!-- Curved Form Card -->
+        <div class="form-card">
+            <div class="mascot-badge">
+                <img id="mascotImg" src="../assets/images/mascot_waving.png" alt="FinanceFlow Mascot">
+            </div>
+            <div class="form-card-header">
+                <h2 id="title">Welcome Back</h2>
+                <p id="subtitle">Log in to manage your finances</p>
             </div>
 
-            <div class="input-group">
-                <i data-lucide="lock" size="20"></i>
-                <input type="password" id="password" placeholder="Password">
+            <div class="form-container">
+                <div class="input-group">
+                    <i data-lucide="user" size="20"></i>
+                    <input type="text" id="username" placeholder="Username" autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <i data-lucide="lock" size="20"></i>
+                    <input type="password" id="password" placeholder="Password">
+                </div>
+
+                <div class="error-message" id="errorMsg"></div>
+
+                <button class="action-button" id="submitBtn">
+                    <span id="btnText">Log In</span>
+                    <span class="loader" id="loader" style="display: none;"></span>
+                </button>
             </div>
 
-            <div class="error-message" id="errorMsg"></div>
-
-            <button class="action-button" id="submitBtn">
-                <span id="btnText">Log In</span>
-                <span class="loader" id="loader" style="display: none;"></span>
-            </button>
-        </div>
-
-        <div class="toggle-text">
-            <span id="toggleTextMsg">Don't have an account?</span> <span id="toggleModeBtn">Sign Up</span>
+            <div class="toggle-text">
+                <span id="toggleTextMsg">Don't have an account?</span> <span id="toggleModeBtn">Sign Up</span>
+            </div>
         </div>
     </div>
 
     <script>
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:3000'
+            : (window.location.protocol === 'file:' ? 'http://localhost:3000' : 'https://finance-flow-fc9r.onrender.com');
+
         lucide.createIcons();
 
         // Redirect immediately if already logged in
@@ -58,6 +79,8 @@
 
         const title = document.getElementById('title');
         const subtitle = document.getElementById('subtitle');
+        const heroTitle = document.getElementById('heroTitle');
+        const heroSubtitle = document.getElementById('heroSubtitle');
         const btnText = document.getElementById('btnText');
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         const toggleTextMsg = document.getElementById('toggleTextMsg');
@@ -66,6 +89,16 @@
         const passwordInput = document.getElementById('password');
         const errorMsg = document.getElementById('errorMsg');
         const loader = document.getElementById('loader');
+        const mascotImg = document.getElementById('mascotImg');
+
+        // Helper to reset mascot state when user interacts
+        const resetMascot = () => {
+            errorMsg.textContent = '';
+            mascotImg.src = isLoginMode ? '../assets/images/mascot_waving.png' : '../assets/images/mascot_standing.png';
+        };
+
+        usernameInput.addEventListener('input', resetMascot);
+        passwordInput.addEventListener('input', resetMascot);
 
         toggleModeBtn.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
@@ -74,15 +107,21 @@
             if (isLoginMode) {
                 title.textContent = 'Welcome Back';
                 subtitle.textContent = 'Log in to manage your finances';
+                heroTitle.textContent = 'Hello!';
+                heroSubtitle.textContent = 'Welcome to FinanceFlow';
                 btnText.textContent = 'Log In';
                 toggleTextMsg.textContent = "Don't have an account?";
                 toggleModeBtn.textContent = 'Sign Up';
+                mascotImg.src = '../assets/images/mascot_waving.png';
             } else {
                 title.textContent = 'Create Account';
                 subtitle.textContent = 'Start your journey with us';
+                heroTitle.textContent = 'Join Us!';
+                heroSubtitle.textContent = 'Manage money effortlessly';
                 btnText.textContent = 'Sign Up';
                 toggleTextMsg.textContent = "Already have an account?";
                 toggleModeBtn.textContent = 'Log In';
+                mascotImg.src = '../assets/images/mascot_standing.png';
             }
         });
 
@@ -92,6 +131,7 @@
 
             if (!username || !password) {
                 errorMsg.textContent = 'Please fill in all fields';
+                mascotImg.src = '../assets/images/mascot_peeking.png';
                 return;
             }
 
@@ -100,7 +140,6 @@
             loader.style.display = 'block';
 
             const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
-            const API_BASE = "https://finance-flow-fc9r.onrender.com";
             const url = `${API_BASE}${endpoint}`;
 
             try {
@@ -116,6 +155,7 @@
 
                 if (!response.ok) {
                     errorMsg.textContent = data.error || 'Something went wrong';
+                    mascotImg.src = '../assets/images/mascot_peeking.png';
                 } else {
                     if (isLoginMode) {
                         // Save token and redirect
@@ -134,6 +174,7 @@
                 }
             } catch (err) {
                 errorMsg.textContent = 'Failed to connect to server. Is the backend running?';
+                mascotImg.src = '../assets/images/mascot_peeking.png';
                 console.error(err);
             } finally {
                 btnText.style.display = 'block';
